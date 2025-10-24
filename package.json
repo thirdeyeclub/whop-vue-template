@@ -1,0 +1,27 @@
+{
+  "name": "vue-whop-template",
+  "version": "1.0.0",
+  "type": "module",
+  "author": "Taylor Blount",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "whop-proxy": "pnpm dlx @whop-apps/dev-proxy --standalone --upstreamPort=5173 --proxyPort=3000"
+  },
+  "dependencies": {
+    "@whop/api": "^0.0.51",
+    "dotenv": "^17.2.3",
+    "vue": "^3.2.47"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@vitejs/plugin-vue": "^4.1.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.2",
+    "typescript": "~5.3.3",
+    "vite": "^4.2.0",
+    "vue-tsc": "^1.8.27"
+  }
+}
