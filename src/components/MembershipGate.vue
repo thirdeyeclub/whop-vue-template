@@ -7,7 +7,8 @@ const hasAccess = ref<boolean>(false);
 const companyId = process.env.WHOP_COMPANY_ID;
 
 onMounted(async () => {
-  hasAccess.value = await checkMembership();
+  const userId = process.env.WHOP_USER_ID || 'demo_user';
+  hasAccess.value = await checkMembership(userId);
 });
 </script>
 

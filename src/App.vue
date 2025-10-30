@@ -5,7 +5,10 @@ import MembershipGate from './components/MembershipGate.vue';
 
 const { currentUser, fetchUser } = useWhop();
 
-onMounted(fetchUser);
+onMounted(() => {
+  const userId = process.env.WHOP_USER_ID || 'demo_user';
+  fetchUser(userId);
+});
 </script>
 
 <template>

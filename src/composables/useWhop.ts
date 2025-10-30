@@ -1,28 +1,37 @@
 import { ref, type Ref } from 'vue';
+import Whop from '@whop/sdk';
 
 interface UseWhopReturn {
-  sdk: any;
+  sdk: Whop | null;
   currentUser: Ref<any>;
   error: Ref<string | null>;
-  fetchUser: () => Promise<void>;
-  checkMembership: () => Promise<boolean>;
+  fetchUser: (userId: string) => Promise<void>;
+  checkMembership: (userId: string) => Promise<boolean>;
 }
 
 export function useWhop(): UseWhopReturn {
-  let sdk: any = null;
+  let sdk: Whop | null = null;
   
   try {
-    import('@whop/api').then(({ WhopClientSdk }) => {
-      sdk = WhopClientSdk();
-    });
+    const apiKey = process.env.WHOP_API_KEY;
+    const appId = process.env.WHOP_APP_ID;
+    
+    if (apiKey && appId) {
+      sdk = new Whop({
+        apiKey,
+        appID: appId,
+      });
+    } else {
+      console.warn('WHOP_API_KEY or WHOP_APP_ID not set - running in demo mode');
+    }
   } catch (err) {
-    console.warn('Whop SDK not available - template demo mode');
+    console.warn('Whop SDK initialization failed - template demo mode', err);
   }
   
   const currentUser = ref<any>(null);
   const error = ref<string | null>(null);
 
-  async function fetchUser(): Promise<void> {
+  async function fetchUser(userId: string): Promise<void> {
     try {
       error.value = null;
       
@@ -31,20 +40,15 @@ export function useWhop(): UseWhopReturn {
         return;
       }
       
-      const response = await sdk.users.getCurrentUser();
-      
-      if ('_error' in response && response._error) {
-        throw response._error;
-      }
-      
-      currentUser.value = response.user;
+      const user = await sdk.users.retrieve(userId);
+      currentUser.value = user;
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Unknown error';
       console.error('Whop SDK error:', err);
     }
   }
 
-  async function checkMembership(): Promise<boolean> {
+  async function checkMembership(userId: string): Promise<boolean> {
     try {
       error.value = null;
       const companyId = process.env.WHOP_COMPANY_ID;
@@ -59,13 +63,8 @@ export function useWhop(): UseWhopReturn {
         return false;
       }
       
-      const response = await sdk.access.checkIfUserHasAccessToCompany({ companyId });
-      
-      if ('_error' in response && response._error) {
-        throw response._error;
-      }
-      
-      return response.hasAccess || false;
+      const response = await sdk.users.checkAccess(companyId, { id: userId });
+      return response.has_access || false;
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Unknown error';
       console.error('Whop SDK error:', err);

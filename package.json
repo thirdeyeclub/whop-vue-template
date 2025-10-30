@@ -10,7 +10,7 @@
     "whop-proxy": "pnpm dlx @whop-apps/dev-proxy --standalone --upstreamPort=5173 --proxyPort=3000"
   },
   "dependencies": {
-    "@whop/api": "^0.0.51",
+    "@whop/sdk": "^0.0.3",
     "dotenv": "^17.2.3",
     "vue": "^3.2.47"
   },
