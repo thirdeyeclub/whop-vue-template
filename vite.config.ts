@@ -1,11 +1,12 @@
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   
   return {
-    plugins: [vue()],
+    plugins: [vue(), tailwindcss()],
     define: {
       'process.env.WHOP_API_KEY': JSON.stringify(env.WHOP_API_KEY || ''),
       'process.env.WHOP_APP_ID': JSON.stringify(env.WHOP_APP_ID || ''),
